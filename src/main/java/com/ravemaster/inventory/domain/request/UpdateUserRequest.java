@@ -1,5 +1,7 @@
 package com.ravemaster.inventory.domain.request;
 
+import com.ravemaster.inventory.domain.enums.UserRole;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateUserRequest {
 
-    @NotNull(message = "Name cannot be blank")
+    @NotBlank(message = "Name cannot be blank")
     private String name;
-    @NotNull(message = "Email cannot be blank")
+    @NotBlank(message = "Email cannot be blank")
     private String email;
-    @NotNull(message = "phone number cannot be blank")
+    @NotNull(message = "Role cannot be null")
+    private String role;
+    @NotBlank(message = "phone number cannot be blank")
     private String phoneNumber;
 }

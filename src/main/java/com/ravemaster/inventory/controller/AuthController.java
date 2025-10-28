@@ -44,7 +44,7 @@ public class AuthController {
                 .authResponse(
                         AuthResponse.builder()
                                 .token(token)
-                                .expiryDateMillis(60L * 60L * 24L * 7L * 30L *6L)
+                                .expiryDateMillis(60L * 60L * 24L * 1000L)
                                 .build()
                 )
                 .build();
@@ -60,6 +60,7 @@ public class AuthController {
         UserDto userDto = UserDto.builder()
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
+                .role(registerRequest.getRole())
                 .phoneNumber(registerRequest.getPhoneNumber())
                 .build();
 
@@ -85,7 +86,7 @@ public class AuthController {
                 .authResponse(
                         AuthResponse.builder()
                                 .token(token)
-                                .expiryDateMillis(60L * 60L * 24L * 7L * 30L *6L)
+                                .expiryDateMillis(60L * 60L * 24L * 1000L)
                                 .build()
                 )
                 .build();

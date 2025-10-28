@@ -1,6 +1,8 @@
 package com.ravemaster.inventory.domain.request;
 
+import com.ravemaster.inventory.domain.enums.UserRole;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +18,9 @@ public class RegisterRequest {
 
     @NotBlank(message = "Email cannot be blank")
     private String email;
+
+    @NotNull(message = "Role cannot be null")
+    private String role;
 
     @NotBlank(message = "Number cannot be blank")
     private String phoneNumber;

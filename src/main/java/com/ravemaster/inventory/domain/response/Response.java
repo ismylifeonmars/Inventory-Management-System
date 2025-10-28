@@ -15,7 +15,7 @@ public class Response {
     private int status;
     private String message;
 
-    //for login
+    //for login and register
     private AuthResponse authResponse;
 
     //for pagination

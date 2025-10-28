@@ -1,6 +1,7 @@
 package com.ravemaster.inventory.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ravemaster.inventory.domain.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class UserDto {
     private String email;
     private String password;
     private String name;
+    private String role;
     private String phoneNumber;
     private LocalDateTime createdAt;
 }

@@ -1,6 +1,5 @@
 package com.ravemaster.inventory.domain.request;
 
-import com.ravemaster.inventory.domain.dto.CategoryDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

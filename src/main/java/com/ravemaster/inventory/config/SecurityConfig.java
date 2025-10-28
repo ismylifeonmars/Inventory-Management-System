@@ -1,6 +1,5 @@
 package com.ravemaster.inventory.config;
 
-import com.ravemaster.inventory.domain.entity.User;
 import com.ravemaster.inventory.repository.UserRepository;
 import com.ravemaster.inventory.security.JwtAuthenticationFilter;
 import com.ravemaster.inventory.security.SystemUserDetailsService;
@@ -35,8 +34,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
         http
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
+//                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )

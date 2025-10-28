@@ -1,5 +1,6 @@
 package com.ravemaster.inventory.domain.entity;
 
+import com.ravemaster.inventory.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,9 @@ public class User {
     private String name;
 
     @Column(nullable = false)
+    private String role;
+
+    @Column(nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -38,12 +42,12 @@ public class User {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(createdAt, user.createdAt);
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && role == user.role && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(createdAt, user.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, name, createdAt);
+        return Objects.hash(id, email, password, name, role, phoneNumber, createdAt);
     }
 
     @PrePersist

@@ -1,5 +1,6 @@
 package com.ravemaster.inventory.controller;
 
+import com.openai.errors.UnauthorizedException;
 import com.ravemaster.inventory.domain.response.ApiErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,17 @@ public class ErrorController {
                 .builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .message("Incorrect username or password")
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED  );
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnauthorisedException(UnauthorizedException ex){
+        log.error("Caught exception",ex);
+        ApiErrorResponse error = ApiErrorResponse
+                .builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Unauthorised")
                 .build();
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED  );
     }
