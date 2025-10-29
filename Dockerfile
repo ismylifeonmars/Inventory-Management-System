@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-22 AS build
+FROM openjdk:24-jdk AS build
 WORKDIR /app
 
 # Copy pom.xml and download dependencies first (to cache layers)
