@@ -9,6 +9,18 @@ services:
         value: prod
       - key: PORT
         value: 8080
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: inventory-db
+          property: jdbcUrl
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: inventory-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: inventory-db
+          property: password
 
 databases:
   - name: inventory-db
