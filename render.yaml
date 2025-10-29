@@ -13,11 +13,11 @@ services:
         fromDatabase:
           name: inventory-db
           property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
+      - key: DATABASE_USERNAME
         fromDatabase:
           name: inventory-db
           property: user
-      - key: SPRING_DATASOURCE_PASSWORD
+      - key: DATABASE_PASSWORD
         fromDatabase:
           name: inventory-db
           property: password
