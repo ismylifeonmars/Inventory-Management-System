@@ -4,6 +4,7 @@ services:
 
   db:
     image: postgres
+    container_name: inventory-db
     ports:
       - "5432:5432"
     restart: always
@@ -23,6 +24,7 @@ services:
 
   adminer:
     image: adminer:latest
+    container_name: inventory-adminer
     restart: always
     ports:
       - "8888:8080"
@@ -36,21 +38,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: inventory-app
     ports:
       - "8080:8080"
     environment:
+      - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=changemeinprod!
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_SHOW_SQL=true
-      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - SPRINGDOC_API_DOCS.PATH=/v3/api-docs
-      - SPRINGDOC_SWAGGER_UI_PATH=/swagger-ui.html
-      - SPRINGDOC_SWAGGER_UI_ENABLED=true
-      - SPRINGDOC_PACKAGESTOSCAN=com.ravemaster.inventory
-      - SPRINGFOC_PATHSTOMATCH=/api/v1/**
     depends_on:
       db:
         condition: service_healthy
