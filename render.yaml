@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: inventory-app
+    env: docker
+    plan: free  # or starter / standard
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: inventory-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: inventory-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: inventory-db
+          property: password
+      - key: PORT
+        value: 8080
+
+databases:
+  - name: inventory-db
+    plan: free
