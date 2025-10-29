@@ -12,7 +12,7 @@ services:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: inventory-db
-          property: connection
+          property: connectionString
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: inventory-db
