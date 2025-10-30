@@ -7,31 +7,20 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-
-      - key: DB_HOST
+      - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: inventory-db
-          property: host
-
-      - key: DB_PORT
-        fromDatabase:
-          name: inventory-db
-          property: port
-
-      - key: DB_NAME
-        fromDatabase:
-          name: inventory-db
-          property: database
-
-      - key: DB_USER
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: inventory-db
           property: user
-
-      - key: DB_PASSWORD
+      - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
           name: inventory-db
           property: password
+      - key: PORT
+        value: "5432"
 
 databases:
   - name: inventory-db
