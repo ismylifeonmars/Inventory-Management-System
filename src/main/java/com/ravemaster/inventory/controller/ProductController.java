@@ -112,7 +112,7 @@ public class ProductController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<Response> getAllProductsByName(String name){
+    public ResponseEntity<Response> getAllProductsByName(@RequestParam("name") String name){
         List<ProductDto> productByName = productService.findProductByName(name);
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
