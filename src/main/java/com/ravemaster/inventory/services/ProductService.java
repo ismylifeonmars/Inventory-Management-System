@@ -15,4 +15,5 @@ public interface ProductService {
     Product getProduct(UUID id);
     void deleteProduct(UUID id);
     Page<ProductDto> listProducts(Pageable pageable);
+    List<ProductDto> findProductByName(String name);
 }

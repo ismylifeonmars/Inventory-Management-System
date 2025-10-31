@@ -110,4 +110,10 @@ public class ProductServiceImpl implements ProductService {
 
         return new PageImpl<>(productDtos,pageable, allProductIds.getTotalElements());
     }
+
+    @Override
+    public List<ProductDto> findProductByName(String name) {
+        List<Product> productList = productRepository.findProductsByNameContaining(name);
+        return productList.stream().map(mapper::toDto).toList();
+    }
 }

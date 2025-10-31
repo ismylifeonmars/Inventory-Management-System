@@ -111,4 +111,15 @@ public class ProductController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<Response> getAllProductsByName(String name){
+        List<ProductDto> productByName = productService.findProductByName(name);
+        Response response = Response.builder()
+                .status(HttpStatus.OK.value())
+                .message("Success")
+                .products(productByName)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 }
