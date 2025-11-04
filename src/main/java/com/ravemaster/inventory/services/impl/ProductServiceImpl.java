@@ -116,4 +116,10 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = productRepository.findProductsByNameContaining(name);
         return productList.stream().map(mapper::toDto).toList();
     }
+
+    @Override
+    public List<ProductDto> findByCategoryName(String categoryName) {
+        List<Product> products = productRepository.findByCategoryName(categoryName);
+        return products.stream().map(mapper::toDto).toList();
+    }
 }

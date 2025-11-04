@@ -122,4 +122,15 @@ public class ProductController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/category-name")
+    public ResponseEntity<Response> getProductsByCategoryName(@RequestParam("categoryName") String categoryName){
+        List<ProductDto> productByName = productService.findByCategoryName(categoryName);
+        Response response = Response.builder()
+                .status(HttpStatus.OK.value())
+                .message("Success")
+                .products(productByName)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 }
