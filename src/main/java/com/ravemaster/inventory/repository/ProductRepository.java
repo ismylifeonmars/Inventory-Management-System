@@ -14,13 +14,24 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("SELECT p.id FROM Product p")
-    Page<Long> findAllProductIds(Pageable pageable);
+    Page<UUID> findAllProductIds(Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<Product> findProductsByNameContaining(@Param("name") String name);
+    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.transactionLines WHERE p.id IN :ids")
+    List<Product> findByIds(@Param("ids") List<UUID> ids);
 
-    List<Product> findByCategoryName(String categoryName);
+    @Query("""
+            SELECT DISTINCT p FROM Product p
+            LEFT JOIN FETCH p.category
+            LEFT JOIN FETCH p.transactionLines
+            WHERE p.id IN :ids
+            AND LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))""")
+    List<Product> findProductsByNameContaining(@Param("ids") List<UUID> ids, @Param("name") String name);
 
-    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.transactionLines WHERE p.id IN :ids")
-    List<Product> findByIds(@Param("ids") List<Long> ids);
+    @Query("""
+            SELECT DISTINCT p FROM Product p
+            LEFT JOIN FETCH p.category c
+            LEFT JOIN FETCH p.transactionLines
+            WHERE p.id IN :ids
+            AND c.name = :categoryName""")
+    List<Product> findByCategoryName(@Param("ids") List<UUID> ids, @Param("categoryName") String categoryName);
 }

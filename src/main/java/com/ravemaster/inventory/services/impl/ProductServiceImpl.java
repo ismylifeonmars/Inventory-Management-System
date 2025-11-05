@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductDto> listProducts(Pageable pageable) {
-        Page<Long> allProductIds = productRepository.findAllProductIds(pageable);
+        Page<UUID> allProductIds = productRepository.findAllProductIds(pageable);
         List<Product> byIds = productRepository.findByIds(allProductIds.getContent());
 
         List<Category> categoryList = new ArrayList<>();
@@ -112,14 +112,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProductByName(String name) {
-        List<Product> productList = productRepository.findProductsByNameContaining(name);
-        return productList.stream().map(mapper::toDto).toList();
+    public Page<ProductDto> findProductByName(Pageable pageable, String name) {
+        Page<UUID> allProductIds = productRepository.findAllProductIds(pageable);
+        List<Product> byIds = productRepository.findProductsByNameContaining(allProductIds.getContent(), name);
+
+        List<Category> categoryList = new ArrayList<>();
+        for (Product product: byIds){
+            categoryList.add(product.getCategory());
+        }
+
+        List<CategoryDto> categoryDtos = categoryList.stream().map(categoryMapper::toDto).toList();
+        List<ProductDto> productDtos = byIds.stream().map(mapper::toDto).toList();
+
+        IntStream.range(0, productDtos.size())
+                .forEach( i -> {
+                    CategoryDto categoryDto = categoryDtos.get(i % categoryDtos.size());
+                    productDtos.get(i).setCategoryName(categoryDto.getName());
+                });
+        return new PageImpl<>(productDtos,pageable, allProductIds.getTotalElements());
     }
 
     @Override
-    public List<ProductDto> findByCategoryName(String categoryName) {
-        List<Product> products = productRepository.findByCategoryName(categoryName);
-        return products.stream().map(mapper::toDto).toList();
+    public Page<ProductDto> findByCategoryName(Pageable pageable, String categoryName) {
+        Page<UUID> allProductIds = productRepository.findAllProductIds(pageable);
+        List<Product> byIds = productRepository.findByCategoryName(allProductIds.getContent(), categoryName);
+
+        List<Category> categoryList = new ArrayList<>();
+        for (Product product: byIds){
+            categoryList.add(product.getCategory());
+        }
+
+        List<CategoryDto> categoryDtos = categoryList.stream().map(categoryMapper::toDto).toList();
+        List<ProductDto> productDtos = byIds.stream().map(mapper::toDto).toList();
+
+        IntStream.range(0, productDtos.size())
+                .forEach( i -> {
+                    CategoryDto categoryDto = categoryDtos.get(i % categoryDtos.size());
+                    productDtos.get(i).setCategoryName(categoryDto.getName());
+                });
+        return new PageImpl<>(productDtos,pageable, allProductIds.getTotalElements());
     }
 }

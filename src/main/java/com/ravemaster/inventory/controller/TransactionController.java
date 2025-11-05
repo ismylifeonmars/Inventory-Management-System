@@ -80,4 +80,40 @@ public class TransactionController{
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/transaction-type")
+    public ResponseEntity<Response> getAllTransactionsByType(@RequestParam("transactionType") String transactionType,Pageable pageable){
+        Page<TransactionDto> transactions = transactionService.getTransactionsByType(pageable, transactionType);
+        PaginationResponse paginationResponse = PaginationResponse.builder()
+                .totalElements(transactions.getTotalElements())
+                .totalPages(transactions.getTotalPages())
+                .currentPage(transactions.getNumber())
+                .pageSize(transactions.getSize())
+                .build();
+        Response response = Response.builder()
+                .status(HttpStatus.OK.value())
+                .message("Success")
+                .transactions(transactions.getContent())
+                .paginationResponse(paginationResponse)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @GetMapping("/sale-type")
+    public ResponseEntity<Response> getAllTransactionsBySale(@RequestParam("saleType") String saleType,Pageable pageable){
+        Page<TransactionDto> transactions = transactionService.getTransactionsBySale(pageable, saleType);
+        PaginationResponse paginationResponse = PaginationResponse.builder()
+                .totalElements(transactions.getTotalElements())
+                .totalPages(transactions.getTotalPages())
+                .currentPage(transactions.getNumber())
+                .pageSize(transactions.getSize())
+                .build();
+        Response response = Response.builder()
+                .status(HttpStatus.OK.value())
+                .message("Success")
+                .transactions(transactions.getContent())
+                .paginationResponse(paginationResponse)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 }

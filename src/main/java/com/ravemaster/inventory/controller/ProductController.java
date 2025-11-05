@@ -112,23 +112,41 @@ public class ProductController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<Response> getAllProductsByName(@RequestParam("name") String name){
-        List<ProductDto> productByName = productService.findProductByName(name);
+    public ResponseEntity<Response> getAllProductsByName(Pageable pageable, @RequestParam("name") String name){
+        Page<ProductDto> productByName = productService.findProductByName(pageable, name);
+
+        PaginationResponse paginationResponse = PaginationResponse.builder()
+                .totalElements(productByName.getTotalElements())
+                .totalPages(productByName.getTotalPages())
+                .currentPage(productByName.getNumber())
+                .pageSize(productByName.getSize())
+                .build();
+
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")
-                .products(productByName)
+                .paginationResponse(paginationResponse)
+                .products(productByName.getContent())
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping("/category-name")
-    public ResponseEntity<Response> getProductsByCategoryName(@RequestParam("categoryName") String categoryName){
-        List<ProductDto> productByName = productService.findByCategoryName(categoryName);
+    public ResponseEntity<Response> getProductsByCategoryName(Pageable pageable,@RequestParam("categoryName") String categoryName){
+        Page<ProductDto> productByCategoryName = productService.findByCategoryName(pageable,categoryName);
+
+        PaginationResponse paginationResponse = PaginationResponse.builder()
+                .totalElements(productByCategoryName.getTotalElements())
+                .totalPages(productByCategoryName.getTotalPages())
+                .currentPage(productByCategoryName.getNumber())
+                .pageSize(productByCategoryName.getSize())
+                .build();
+
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")
-                .products(productByName)
+                .paginationResponse(paginationResponse)
+                .products(productByCategoryName.getContent())
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }

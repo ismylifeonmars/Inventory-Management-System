@@ -92,8 +92,24 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Page<TransactionDto> getTransactions(Pageable pageable) {
-        Page<Long> idpage = repository.findAllTransactionIds(pageable);
+        Page<UUID> idpage = repository.findAllTransactionIds(pageable);
         List<Transaction> transactions = repository.findByIds(idpage.getContent());
+        List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
+        return new PageImpl<>(collected, pageable, idpage.getTotalElements());
+    }
+
+    @Override
+    public Page<TransactionDto> getTransactionsByType(Pageable pageable, String transactionType) {
+        Page<UUID> idpage = repository.findAllTransactionIds(pageable);
+        List<Transaction> transactions = repository.findByTransactionType(idpage.getContent(),transactionType);
+        List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
+        return new PageImpl<>(collected, pageable, idpage.getTotalElements());
+    }
+
+    @Override
+    public Page<TransactionDto> getTransactionsBySale(Pageable pageable, String saleType) {
+        Page<UUID> idpage = repository.findAllTransactionIds(pageable);
+        List<Transaction> transactions = repository.findBySaleType(idpage.getContent(),saleType);
         List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
         return new PageImpl<>(collected, pageable, idpage.getTotalElements());
     }

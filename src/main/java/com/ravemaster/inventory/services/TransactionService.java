@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface TransactionService {
     TransactionDto createTransaction(TransactionRequest request);
     Page<TransactionDto> getTransactions(Pageable pageable);
+    Page<TransactionDto> getTransactionsByType(Pageable pageable, String transactionType);
+    Page<TransactionDto> getTransactionsBySale(Pageable pageable, String saleType);
     TransactionDtoSecond getTransactionWithLines(UUID id);
     void deleteTransaction(UUID id);
 }
