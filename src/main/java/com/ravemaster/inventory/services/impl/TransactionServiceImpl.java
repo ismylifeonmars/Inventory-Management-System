@@ -93,7 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Page<TransactionDto> getTransactions(Pageable pageable) {
         Page<UUID> idpage = repository.findAllTransactionIds(pageable);
-        List<Transaction> transactions = repository.findByIds(idpage.getContent());
+        List<Transaction> transactions = repository.findByIds(idpage.getContent(),pageable.getSort());
         List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
         return new PageImpl<>(collected, pageable, idpage.getTotalElements());
     }
@@ -101,7 +101,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Page<TransactionDto> getTransactionsByType(Pageable pageable, String transactionType) {
         Page<UUID> idpage = repository.findAllTransactionIds(pageable);
-        List<Transaction> transactions = repository.findByTransactionType(idpage.getContent(),transactionType);
+        List<Transaction> transactions = repository.findByTransactionType(idpage.getContent(),transactionType,pageable.getSort());
         List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
         return new PageImpl<>(collected, pageable, idpage.getTotalElements());
     }
@@ -109,7 +109,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Page<TransactionDto> getTransactionsBySale(Pageable pageable, String saleType) {
         Page<UUID> idpage = repository.findAllTransactionIds(pageable);
-        List<Transaction> transactions = repository.findBySaleType(idpage.getContent(),saleType);
+        List<Transaction> transactions = repository.findBySaleType(idpage.getContent(),saleType,pageable.getSort());
         List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
         return new PageImpl<>(collected, pageable, idpage.getTotalElements());
     }

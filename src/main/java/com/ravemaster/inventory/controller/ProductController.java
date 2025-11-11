@@ -2,8 +2,6 @@ package com.ravemaster.inventory.controller;
 
 import com.ravemaster.inventory.domain.dto.CategoryDto;
 import com.ravemaster.inventory.domain.dto.ProductDto;
-import com.ravemaster.inventory.domain.dto.TransactionLineDto;
-import com.ravemaster.inventory.domain.entity.Category;
 import com.ravemaster.inventory.domain.entity.Product;
 import com.ravemaster.inventory.domain.request.ProductRequest;
 import com.ravemaster.inventory.domain.response.PaginationResponse;
@@ -20,10 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -132,7 +128,7 @@ public class ProductController {
     }
 
     @GetMapping("/category-name")
-    public ResponseEntity<Response> getProductsByCategoryName(Pageable pageable,@RequestParam("categoryName") String categoryName){
+    public ResponseEntity<Response> getProductsByCategoryName(Pageable pageable, @RequestParam("categoryName") String categoryName){
         Page<ProductDto> productByCategoryName = productService.findByCategoryName(pageable,categoryName);
 
         PaginationResponse paginationResponse = PaginationResponse.builder()
