@@ -3,6 +3,7 @@ package com.ravemaster.inventory.repository;
 import com.ravemaster.inventory.domain.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<UUID> findAllProductIds(Pageable pageable);
 
     @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.transactionLines WHERE p.id IN :ids")
-    List<Product> findByIds(@Param("ids") List<UUID> ids);
+    List<Product> findByIds(@Param("ids") List<UUID> ids, Sort sort);
 
     @Query("""
             SELECT DISTINCT p FROM Product p
@@ -25,7 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             LEFT JOIN FETCH p.transactionLines
             WHERE p.id IN :ids
             AND LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))""")
-    List<Product> findProductsByNameContaining(@Param("ids") List<UUID> ids, @Param("name") String name);
+    List<Product> findProductsByNameContaining(@Param("ids") List<UUID> ids, @Param("name") String name, Sort sort);
 
     @Query("""
             SELECT DISTINCT p FROM Product p
@@ -33,5 +34,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             LEFT JOIN FETCH p.transactionLines
             WHERE p.id IN :ids
             AND c.name = :categoryName""")
-    List<Product> findByCategoryName(@Param("ids") List<UUID> ids, @Param("categoryName") String categoryName);
+    List<Product> findByCategoryName(@Param("ids") List<UUID> ids, @Param("categoryName") String categoryName, Sort sort);
 }
