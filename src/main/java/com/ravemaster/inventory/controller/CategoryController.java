@@ -37,7 +37,6 @@ public class CategoryController {
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getCategory(
             @PathVariable UUID id
             ){
@@ -77,7 +76,6 @@ public class CategoryController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getAllCategories(){
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
