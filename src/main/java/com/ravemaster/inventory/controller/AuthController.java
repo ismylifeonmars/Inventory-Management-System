@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,20 +54,8 @@ public class AuthController {
             @RequestBody RegisterRequest registerRequest
             ){
 
-        //Create UserDto
-        UserDto userDto = UserDto.builder()
-                .name(registerRequest.getName())
-                .email(registerRequest.getEmail())
-                .role(registerRequest.getRole())
-                .phoneNumber(registerRequest.getPhoneNumber())
-                .build();
-
-        //Encode password and set it to dto
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userDto.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-
         //Save user in Database
-        User createdUser = userService.createUser(userMapper.toEntity(userDto));
+        User createdUser = userService.createUser(registerRequest);
 
         //Authenticate user
         UserDetails userDetails = authenticationService.authenticate(

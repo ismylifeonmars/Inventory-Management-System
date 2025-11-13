@@ -17,13 +17,14 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v1/user")
+@RequestMapping(path = "/api/v1/admin/user")
 public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getUser(
             @PathVariable("id") UUID uuid
     ){
@@ -38,6 +39,7 @@ public class UserController {
     }
 
     @PutMapping(path = "/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> updateUser(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequest updateUserRequest
@@ -53,6 +55,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> deleteUser(
             @PathVariable("id") UUID id
     ){

@@ -1,17 +1,15 @@
 package com.ravemaster.inventory.controller;
 
-import com.openai.errors.UnauthorizedException;
 import com.ravemaster.inventory.domain.response.ApiErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 @RestController
@@ -61,19 +59,8 @@ public class ErrorController {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED  );
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ApiErrorResponse> handleUnauthorisedException(UnauthorizedException ex){
-        log.error("Caught exception",ex);
-        ApiErrorResponse error = ApiErrorResponse
-                .builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .message("Unauthorised")
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED  );
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiErrorResponse> handleAccessDeniedException(AccessDeniedException ex){
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex){
         log.error("Caught exception",ex);
         ApiErrorResponse error = ApiErrorResponse
                 .builder()

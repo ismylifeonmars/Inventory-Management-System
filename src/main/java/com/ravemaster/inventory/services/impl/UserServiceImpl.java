@@ -1,15 +1,21 @@
 package com.ravemaster.inventory.services.impl;
 
+import com.ravemaster.inventory.domain.dto.UserDto;
 import com.ravemaster.inventory.domain.entity.User;
+import com.ravemaster.inventory.domain.request.RegisterRequest;
 import com.ravemaster.inventory.domain.request.UpdateUserRequest;
+import com.ravemaster.inventory.mapper.UserMapper;
 import com.ravemaster.inventory.repository.UserRepository;
 import com.ravemaster.inventory.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -17,16 +23,31 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public User createUser(User user) {
+    public User createUser(RegisterRequest registerRequest) {
 
-        String username = user.getEmail();
+        //Create UserDto
+        UserDto userDto = UserDto.builder()
+                .name(registerRequest.getName())
+                .email(registerRequest.getEmail())
+                .role(registerRequest.getRole())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .build();
+
+        //Encode password and set it to dto
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        userDto.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+        String username = userDto.getEmail();
 
         if (userRepository.existsByEmail(username)){
             throw new IllegalArgumentException("User already exists with email: "+username);
         }
-        return userRepository.save(user);
+        User entity = userMapper.toEntity(userDto);
+
+        return userRepository.save(entity);
     }
 
     @Override

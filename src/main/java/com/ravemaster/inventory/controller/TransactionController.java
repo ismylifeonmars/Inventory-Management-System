@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -38,6 +39,7 @@ public class TransactionController{
     }
 
     @GetMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getTransactionWithLines(
             @PathVariable UUID id
     ){
@@ -51,6 +53,7 @@ public class TransactionController{
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> deleteTransaction(
             @PathVariable UUID id
     ){
@@ -63,6 +66,7 @@ public class TransactionController{
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getAllTransactions(Pageable pageable){
         Page<TransactionDto> transactions = transactionService.getTransactions(pageable);
         PaginationResponse paginationResponse = PaginationResponse.builder()
@@ -81,6 +85,7 @@ public class TransactionController{
     }
 
     @GetMapping("/transaction-type")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getAllTransactionsByType(@RequestParam("transactionType") String transactionType,Pageable pageable){
         Page<TransactionDto> transactions = transactionService.getTransactionsByType(pageable, transactionType);
         PaginationResponse paginationResponse = PaginationResponse.builder()
@@ -99,6 +104,7 @@ public class TransactionController{
     }
 
     @GetMapping("/sale-type")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getAllTransactionsBySale(@RequestParam("saleType") String saleType,Pageable pageable){
         Page<TransactionDto> transactions = transactionService.getTransactionsBySale(pageable, saleType);
         PaginationResponse paginationResponse = PaginationResponse.builder()

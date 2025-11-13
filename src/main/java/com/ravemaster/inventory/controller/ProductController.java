@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -31,6 +32,7 @@ public class ProductController {
     private final TransactionLineMapper lineMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> createProduct(
             @Valid @RequestBody ProductRequest productRequest
             ){
@@ -45,6 +47,7 @@ public class ProductController {
     }
 
     @PutMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> updateProduct(
             @PathVariable UUID id,
             @Valid @RequestBody ProductRequest productRequest
@@ -60,6 +63,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getProduct(
             @PathVariable UUID id
     ){
@@ -76,6 +80,7 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> deleteProduct(
             @PathVariable UUID id
     ){
@@ -88,6 +93,7 @@ public class ProductController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getAllProducts(Pageable pageable){
         Page<ProductDto> productList = productService.listProducts(pageable);
 
@@ -108,6 +114,7 @@ public class ProductController {
     }
 
     @GetMapping("/name")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getAllProductsByName(Pageable pageable, @RequestParam("name") String name){
         Page<ProductDto> productByName = productService.findProductByName(pageable, name);
 
@@ -128,6 +135,7 @@ public class ProductController {
     }
 
     @GetMapping("/category-name")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> getProductsByCategoryName(Pageable pageable, @RequestParam("categoryName") String categoryName){
         Page<ProductDto> productByCategoryName = productService.findByCategoryName(pageable,categoryName);
 
