@@ -22,4 +22,5 @@ public class TransactionDtoSecond {
     private Double totalAmount;
     private LocalDateTime createdAt;
     private List<TransactionLineDto> transactionLines;
+    private String name;
 }

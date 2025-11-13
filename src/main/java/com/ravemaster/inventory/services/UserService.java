@@ -9,6 +9,7 @@ import java.util.UUID;
 public interface UserService{
     User createUser(RegisterRequest registerRequest);
     User getUserById(UUID id);
+    User getUserByName(String name);
     User updateUser(UUID id, UpdateUserRequest user);
     void deleteUser(UUID id);
 }

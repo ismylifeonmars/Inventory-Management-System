@@ -59,6 +59,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByName(String name) {
+        return userRepository.findByName(name).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "User not found with name:"+ name
+                )
+        );
+    }
+
+    @Override
     @Transactional
     public User updateUser(UUID id, UpdateUserRequest user) {
         User existingUser = userRepository.findById(id)

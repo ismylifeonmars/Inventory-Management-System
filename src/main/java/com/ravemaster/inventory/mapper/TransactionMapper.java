@@ -17,8 +17,10 @@ public interface TransactionMapper {
     Transaction toEntity(TransactionRequest transactionRequest);
 
     @Mapping(source = "transactionLines", target = "transactionLinesCount", qualifiedByName = "calculateTransactionLines")
+    @Mapping(source = "user.name", target = "name", defaultValue = "")
     TransactionDto toDto(Transaction transaction);
 
+    @Mapping(source = "user.name", target = "name", defaultValue = "")
     TransactionDtoSecond toDtoSecond(Transaction transaction);
 
     @Named("calculateTransactionLines")

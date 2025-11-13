@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -20,6 +21,9 @@ public class TransactionRequest {
 
     @NotBlank(message = "Sale type must be included")
     private String saleType;
+
+    @NotNull(message = "User id must be provided")
+    private String name;
 
     @NotNull(message = "Transaction line cannot be null")
     private List<TransactionLineRequest> transactionLineRequests;

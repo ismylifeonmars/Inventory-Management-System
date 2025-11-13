@@ -6,12 +6,14 @@ import com.ravemaster.inventory.domain.dto.TransactionLineDto;
 import com.ravemaster.inventory.domain.entity.Product;
 import com.ravemaster.inventory.domain.entity.Transaction;
 import com.ravemaster.inventory.domain.entity.TransactionLine;
+import com.ravemaster.inventory.domain.entity.User;
 import com.ravemaster.inventory.domain.request.TransactionLineRequest;
 import com.ravemaster.inventory.domain.request.TransactionRequest;
 import com.ravemaster.inventory.mapper.TransactionLineMapper;
 import com.ravemaster.inventory.mapper.TransactionMapper;
 import com.ravemaster.inventory.repository.ProductRepository;
 import com.ravemaster.inventory.repository.TransactionRepository;
+import com.ravemaster.inventory.repository.UserRepository;
 import com.ravemaster.inventory.services.TransactionService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,6 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository repository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     private final TransactionMapper mapper;
     private final TransactionLineMapper lineMapper;
 
@@ -48,6 +52,14 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionType(request.getTransactionType())
                 .saleType(request.getSaleType())
                 .build();
+
+        User byName = userRepository.findByName(request.getName()).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "User does not exist with name:" +request.getName()
+                )
+        );
+
+        transaction.setUser(byName);
 
         for(TransactionLineRequest lineRequest: request.getTransactionLineRequests()){
             Integer quantity = lineRequest.getQuantity();

@@ -17,12 +17,12 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("SELECT p.id FROM Product p")
     Page<UUID> findAllProductIds(Pageable pageable);
 
-    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.transactionLines WHERE p.id IN :ids")
+    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category c LEFT JOIN FETCH p.transactionLines WHERE p.id IN :ids")
     List<Product> findByIds(@Param("ids") List<UUID> ids, Sort sort);
 
     @Query("""
             SELECT DISTINCT p FROM Product p
-            LEFT JOIN FETCH p.category
+            LEFT JOIN FETCH p.category c
             LEFT JOIN FETCH p.transactionLines
             WHERE p.id IN :ids
             AND LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))""")
