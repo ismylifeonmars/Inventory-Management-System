@@ -23,5 +23,5 @@ public class TransactionDto {
     private Double totalAmount;
     private LocalDateTime createdAt;
     private int transactionLinesCount;
-    private String name;
+    private String email;
 }

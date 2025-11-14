@@ -23,7 +23,7 @@ public class TransactionRequest {
     private String saleType;
 
     @NotNull(message = "User id must be provided")
-    private String name;
+    private String email;
 
     @NotNull(message = "Transaction line cannot be null")
     private List<TransactionLineRequest> transactionLineRequests;

@@ -53,9 +53,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .saleType(request.getSaleType())
                 .build();
 
-        User byName = userRepository.findByName(request.getName()).orElseThrow(
+        User byName = userRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new EntityNotFoundException(
-                        "User does not exist with name:" +request.getName()
+                        "User does not exist with name:" +request.getEmail()
                 )
         );
 

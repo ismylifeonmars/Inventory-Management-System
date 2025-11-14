@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: Inventory-Management-System
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+# --- Swagger (All Profiles) ---
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  packagesToScan: com.ravemaster.inventory
+  pathsToMatch: /api/v1/**
+
+# --- Server ---
+server:
+  port: ${PORT:8080}
+
+# --- JWT (shared, override in prod if needed) ---
+jwt:
+  secret: 7c4a8d09ca3762af61e59520943dc26494f8941b1234567890abcdef1234567
+
+---
+# ==============================
+# DEV PROFILE (Local PostgreSQL)
+# ==============================
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    com.zaxxer.hikari: DEBUG
+    org.springframework.jdbc: DEBUG
+
+---
+# ==============================
+# TEST PROFILE (H2 In-Memory)
+# ==============================
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+# ==============================
+# PROD PROFILE (Render)
+# ==============================
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: INFO

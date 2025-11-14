@@ -9,7 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByEmail(String email);
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.transactions WHERE u.email = :email")
+    Optional<User> findByEmail(@Param("email") String email);
     boolean existsByEmail(String email);
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.transactions WHERE u.name = :name")
     Optional<User> findByName(@Param("name") String name);

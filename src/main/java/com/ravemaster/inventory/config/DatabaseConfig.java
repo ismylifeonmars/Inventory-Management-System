@@ -4,6 +4,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
@@ -18,24 +19,57 @@ public class DatabaseConfig {
 
     @Bean
     @Primary
-    public DataSource dataSource(){
-        String host = env.getProperty("DB_HOST");
-        Integer port = Integer.valueOf(env.getProperty("DB_PORT", "5432"));  // Default to 5432
-        String database = env.getProperty("DB_DATABASE");
-        String username = env.getProperty("SPRING_DATASOURCE_USERNAME");
-        String password = env.getProperty("SPRING_DATASOURCE_PASSWORD");
+    public DataSource dataSource() {
+        String activeProfile = env.getActiveProfiles().length > 0
+                ? env.getActiveProfiles()[0]
+                : "dev";
 
-        if (host == null || database == null) {
-            throw new IllegalStateException("Missing required DB properties: DB_HOST or DB_DATABASE");
-        }
+        return switch (activeProfile) {
+            case "prod" -> prodDataSource();
+            case "dev"  -> devDataSource();
+            case "test" -> testDataSource();
+            default     -> throw new IllegalStateException("Unknown profile: " + activeProfile);
+        };
+    }
 
-        String jdbcUrl = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
+    private DataSource prodDataSource() {
+        String host     = env.getRequiredProperty("DB_HOST");
+        String port     = env.getProperty("DB_PORT", "5432");
+        String db       = env.getRequiredProperty("DB_DATABASE");
+        String user     = env.getRequiredProperty("SPRING_DATASOURCE_USERNAME");
+        String pass     = env.getRequiredProperty("SPRING_DATASOURCE_PASSWORD");
+        String driver   = env.getProperty("SPRING_DATASOURCE_DRIVER_CLASS_NAME", "org.postgresql.Driver");
 
+        String url = "jdbc:postgresql://%s:%s/%s".formatted(host, port, db);
         return DataSourceBuilder.create()
-                .url(jdbcUrl)
-                .username(username)
-                .password(password)
-                .driverClassName("org.postgresql.Driver")
+                .url(url).username(user).password(pass).driverClassName(driver)
                 .build();
     }
+
+    private DataSource devDataSource() {
+        String host   = env.getProperty("DEV_DB_HOST", "localhost");
+        String port   = env.getProperty("DEV_DB_PORT", "5432");
+        String db     = env.getProperty("DEV_DB_NAME", "postgres");
+        String user   = env.getProperty("DEV_DB_USER", "postgres");
+        String pass   = env.getProperty("DEV_DB_PASS", "changemeinprod!");
+        String driver = "org.postgresql.Driver";
+
+        String url = "jdbc:postgresql://%s:%s/%s".formatted(host, port, db);
+        return DataSourceBuilder.create()
+                .url(url).username(user).password(pass).driverClassName(driver)
+                .build();
+    }
+
+    private DataSource testDataSource() {
+        String dbName = env.getProperty("TEST_DB_NAME", "testdb");
+        String url    = "jdbc:h2:mem:%s;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH"
+                .formatted(dbName);
+        return DataSourceBuilder.create()
+                .url(url)
+                .username("sa")
+                .password("")
+                .driverClassName("org.h2.Driver")
+                .build();
+    }
+
 }
