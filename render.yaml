@@ -4,23 +4,31 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: prod
-      - key: SPRING_DATASOURCE_URL
+      # ---- Securely pull DB details from Render ----
+      - key: DB_HOST
         fromDatabase:
           name: inventory-db
-          property: jdbcUrl
+          property: host
+
+      - key: DB_PORT
+        fromDatabase:
+          name: inventory-db
+          property: port
+
+      - key: DB_DATABASE
+        fromDatabase:
+          name: inventory-db
+          property: database
+
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: inventory-db
           property: user
+
       - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
           name: inventory-db
           property: password
-      - key: PORT
-        sync: false
-        generateValue: true
     runtime: docker
 
 databases:
