@@ -1,7 +1,6 @@
 services:
   - type: web
     name: inventory-app
-    env: docker
     plan: free
     dockerfilePath: ./Dockerfile
     envVars:
@@ -21,6 +20,7 @@ services:
           property: password
       - key: PORT
         value: "5432"
+    runtime: docker
 
 databases:
   - name: inventory-db

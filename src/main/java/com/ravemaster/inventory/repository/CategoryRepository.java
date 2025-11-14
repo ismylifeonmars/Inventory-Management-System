@@ -3,6 +3,7 @@ package com.ravemaster.inventory.repository;
 import com.ravemaster.inventory.domain.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +14,6 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     @Query("SELECT c FROM Category c LEFT JOIN FETCH c.products")
     List<Category> findAllWithProductCount();
-    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.products")
-    Optional<Category> findCategoryByName(String name);
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.products WHERE c.name = :name")
+    Optional<Category> findCategoryByName(@Param("name") String name);
 }
