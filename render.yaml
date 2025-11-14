@@ -9,7 +9,7 @@ services:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: inventory-db
-          property: connectionString
+          property: jdbcUrl
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: inventory-db
@@ -19,7 +19,8 @@ services:
           name: inventory-db
           property: password
       - key: PORT
-        value: "5432"
+        sync: false
+        generateValue: true
     runtime: docker
 
 databases:
