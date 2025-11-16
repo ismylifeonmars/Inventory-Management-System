@@ -3,6 +3,7 @@ package com.ravemaster.inventory.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class Transaction {
     private String saleType;
 
     @Column(nullable = false)
-    private Double totalAmount;
+    private BigDecimal totalAmount;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -44,7 +45,7 @@ public class Transaction {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return Objects.equals(id, that.id) && transactionType.equals(that.transactionType) && saleType.equals(that.saleType) && Objects.equals(totalAmount, that.totalAmount) && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(id, that.id) && Objects.equals(transactionType, that.transactionType) && Objects.equals(saleType, that.saleType) && Objects.equals(totalAmount, that.totalAmount) && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override

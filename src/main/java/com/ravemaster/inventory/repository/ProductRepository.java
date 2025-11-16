@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,4 +36,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             WHERE p.id IN :ids
             AND c.name = :categoryName""")
     List<Product> findByCategoryName(@Param("ids") List<UUID> ids, @Param("categoryName") String categoryName, Sort sort);
+
+    @Query("SELECT COALESCE(SUM(p.stockQuantity * p.unitPrice),0) FROM Product p")
+    BigDecimal calculateTotalStockValue();
 }

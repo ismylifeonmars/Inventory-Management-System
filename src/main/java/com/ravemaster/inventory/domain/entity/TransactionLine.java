@@ -3,6 +3,7 @@ package com.ravemaster.inventory.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,10 +24,10 @@ public class TransactionLine {
     private Integer quantity;
 
     @Column(nullable = false)
-    private Double unitPrice;//Snapshot of price at transaction time
+    private BigDecimal unitPrice;//Snapshot of price at transaction time
 
     @Column(nullable = false)
-    private Double lineTotal;//quantity * unitPrice
+    private BigDecimal lineTotal;//quantity * unitPrice
 
     //Many-to-one: Each line references one product
     @ManyToOne(fetch = FetchType.LAZY)

@@ -3,6 +3,7 @@ package com.ravemaster.inventory.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private Double unitPrice;
+    private BigDecimal unitPrice;
 
     @Column(nullable = false)
     private Integer stockQuantity;

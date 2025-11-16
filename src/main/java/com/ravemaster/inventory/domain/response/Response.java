@@ -35,6 +35,8 @@ public class Response {
     private TransactionDtoSecond transactionDtoSecond;
     private List<TransactionDto> transactions;
 
+    private DashboardResponse dashboardResponse;
+
     //for errors
     private ApiErrorResponse apiErrorResponse;
 }

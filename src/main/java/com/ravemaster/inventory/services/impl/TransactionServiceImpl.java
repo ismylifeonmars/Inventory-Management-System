@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,15 +87,15 @@ public class TransactionServiceImpl implements TransactionService {
             TransactionLine transactionLine = TransactionLine.builder()
                     .quantity(quantity)
                     .product(product)
-                    .unitPrice(unitPrice)
-                    .lineTotal(lineTotal)
+                    .unitPrice(BigDecimal.valueOf(unitPrice))
+                    .lineTotal(BigDecimal.valueOf(lineTotal))
                     .transaction(transaction)
                     .build();
             transactionLines.add(transactionLine);
         }
 
         transaction.setTransactionLines(transactionLines);
-        transaction.setTotalAmount(total);
+        transaction.setTotalAmount(BigDecimal.valueOf(total));
 
         productRepository.saveAll(products);
         Transaction savedTransaction = repository.save(transaction);

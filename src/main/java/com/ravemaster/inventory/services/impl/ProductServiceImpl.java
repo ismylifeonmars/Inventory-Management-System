@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(productRequest.getDescription())
                 .stockQuantity(productRequest.getStockQuantity())
                 .category(categoryByName)
-                .unitPrice(productRequest.getUnitPrice())
+                .unitPrice(BigDecimal.valueOf(productRequest.getUnitPrice()))
                 .build();
 
         return productRepository.save(product);
@@ -71,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productRequest.getDescription());
         product.setStockQuantity(productRequest.getStockQuantity());
         product.setCategory(categoryByName);
-        product.setUnitPrice(productRequest.getUnitPrice());
+        product.setUnitPrice(BigDecimal.valueOf(productRequest.getUnitPrice()));
         return productRepository.save(product);
     }
 
