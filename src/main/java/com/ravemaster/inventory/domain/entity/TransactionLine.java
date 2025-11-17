@@ -8,7 +8,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "transaction_lines")
+@Table(
+        name = "transaction_lines",
+        indexes = {
+                @Index(name = "idx_product_id", columnList = "product_id"),
+                @Index(name = "idx_transaction_id", columnList = "transaction_id")
+        }
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

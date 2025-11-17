@@ -35,6 +35,10 @@ public class AuthController {
                 loginRequest.getEmail(),
                 loginRequest.getPassword()
         );
+
+        User userByEmail = userService.getUserByEmail(userDetails.getUsername());
+        UserDto userDto = userMapper.toDto(userByEmail);
+
         String token = authenticationService.generateToken(userDetails);
         Response authResponse = Response.builder()
                 .status(HttpStatus.OK.value())
@@ -45,6 +49,7 @@ public class AuthController {
                                 .expiryDateMillis(60L * 60L * 24L * 1000L)
                                 .build()
                 )
+                .user(userDto)
                 .build();
         return ResponseEntity.ok(authResponse);
     }
@@ -65,6 +70,10 @@ public class AuthController {
         //Generate token
         String token = authenticationService.generateToken(userDetails);
 
+        User userByEmail = userService.getUserByEmail(userDetails.getUsername());
+        UserDto userDto = userMapper.toDto(userByEmail);
+
+
         //Return response
         Response registerResponse = Response.builder()
                 .status(HttpStatus.CREATED.value())
@@ -75,6 +84,7 @@ public class AuthController {
                                 .expiryDateMillis(60L * 60L * 24L * 1000L)
                                 .build()
                 )
+                .user(userDto)
                 .build();
         return ResponseEntity.ok(registerResponse);
     }

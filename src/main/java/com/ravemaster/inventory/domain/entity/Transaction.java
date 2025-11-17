@@ -11,7 +11,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "transactions")
+@Table(
+        name = "transactions",
+        indexes = {
+                @Index(name = "idx_user_id",columnList = "user_id"),
+                @Index(name = "idx_stats", columnList = "transaction_type,sale_type,created_at"),
+        }
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

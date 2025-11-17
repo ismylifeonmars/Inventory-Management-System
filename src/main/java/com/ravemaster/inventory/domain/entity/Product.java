@@ -11,14 +11,19 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "products")
+@Table(
+        name = "products",
+        indexes = {
+                @Index(name = "idx_products_category_id", columnList = "category_id"),
+                @Index(name = "idx_product_name", columnList = "name"),
+                @Index(name = "idx_products_value", columnList = "stock_quantity,unit_price")
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

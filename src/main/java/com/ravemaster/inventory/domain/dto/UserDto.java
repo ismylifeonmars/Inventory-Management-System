@@ -23,4 +23,5 @@ public class UserDto {
     private String role;
     private String phoneNumber;
     private LocalDateTime createdAt;
+    private int transactionsCount;
 }
