@@ -93,49 +93,23 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductDto> listProducts(Pageable pageable) {
         Page<UUID> allProductIds = productRepository.findAllProductIds(pageable);
-        List<Product> byIds = productRepository.findByIds(allProductIds.getContent(),pageable.getSort());
-
-        List<Category> categoryList = new ArrayList<>();
-        for (Product product: byIds){
-            categoryList.add(product.getCategory());
-        }
-        List<CategoryDto> categoryDtos = categoryList.stream().map(categoryMapper::toDto).toList();
-        List<ProductDto> productDtos = byIds.stream().map(mapper::toDto).toList();
-
-        IntStream.range(0, productDtos.size())
-                .forEach( i -> {
-                    CategoryDto categoryDto = categoryDtos.get(i % categoryDtos.size());
-                    productDtos.get(i).setCategoryName(categoryDto.getName());
-                });
-
-        return new PageImpl<>(productDtos,pageable, allProductIds.getTotalElements());
+        return new PageImpl<>(getList(allProductIds, pageable),pageable, allProductIds.getTotalElements());
     }
 
     @Override
     public Page<ProductDto> findProductByName(Pageable pageable, String name) {
-        Page<UUID> allProductIds = productRepository.findAllProductIds(pageable);
-        List<Product> byIds = productRepository.findProductsByNameContaining(allProductIds.getContent(), name, pageable.getSort());
-
-        List<Category> categoryList = new ArrayList<>();
-        for (Product product: byIds){
-            categoryList.add(product.getCategory());
-        }
-
-        List<CategoryDto> categoryDtos = categoryList.stream().map(categoryMapper::toDto).toList();
-        List<ProductDto> productDtos = byIds.stream().map(mapper::toDto).toList();
-
-        IntStream.range(0, productDtos.size())
-                .forEach( i -> {
-                    CategoryDto categoryDto = categoryDtos.get(i % categoryDtos.size());
-                    productDtos.get(i).setCategoryName(categoryDto.getName());
-                });
-        return new PageImpl<>(productDtos,pageable, allProductIds.getTotalElements());
+        Page<UUID> allProductIds = productRepository.findAllProductIdsByName(name,pageable);
+        return new PageImpl<>(getList(allProductIds, pageable),pageable, allProductIds.getTotalElements());
     }
 
     @Override
     public Page<ProductDto> findByCategoryName(Pageable pageable, String categoryName) {
-        Page<UUID> allProductIds = productRepository.findAllProductIds(pageable);
-        List<Product> byIds = productRepository.findByCategoryName(allProductIds.getContent(), categoryName, pageable.getSort());
+        Page<UUID> allProductIds = productRepository.findAllProductIdsByCategory(categoryName,pageable);
+        return new PageImpl<>(getList(allProductIds, pageable),pageable, allProductIds.getTotalElements());
+    }
+
+    private List<ProductDto> getList(Page<UUID> idList, Pageable pageable){
+        List<Product> byIds = productRepository.findByIds(idList.getContent(), pageable.getSort());
 
         List<Category> categoryList = new ArrayList<>();
         for (Product product: byIds){
@@ -150,6 +124,6 @@ public class ProductServiceImpl implements ProductService {
                     CategoryDto categoryDto = categoryDtos.get(i % categoryDtos.size());
                     productDtos.get(i).setCategoryName(categoryDto.getName());
                 });
-        return new PageImpl<>(productDtos, pageable, allProductIds.getTotalElements());
+        return productDtos;
     }
 }

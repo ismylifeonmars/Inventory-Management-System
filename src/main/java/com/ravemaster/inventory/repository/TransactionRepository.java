@@ -21,14 +21,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     @Query("SELECT t.id FROM Transaction t")
     Page<UUID> findAllTransactionIds(Pageable pageable);
 
+    @Query("SELECT t.id FROM Transaction t WHERE t.transactionType = :transactionType")
+    Page<UUID> findAllTransactionIdsByType(@Param("transactionType") String transactionType,Pageable pageable);
+
+    @Query("SELECT t.id FROM Transaction t WHERE t.saleType = :saleType")
+    Page<UUID> findAllTransactionIdsBySale(@Param("saleType") String saleType,Pageable pageable);
+
     @Query("SELECT DISTINCT t FROM Transaction t LEFT JOIN FETCH t.transactionLines LEFT JOIN FETCH t.user u WHERE t.id IN :ids")
     List<Transaction> findByIds(@Param("ids") List<UUID> ids, Sort sort);
-
-    @Query("SELECT DISTINCT t FROM Transaction t LEFT JOIN FETCH t.transactionLines LEFT JOIN FETCH t.user u WHERE t.id IN :ids AND t.transactionType = :transactionType")
-    List<Transaction> findByTransactionType(@Param("ids") List<UUID> ids,@Param("transactionType") String transactionType, Sort sort);
-
-    @Query("SELECT DISTINCT t FROM Transaction t LEFT JOIN FETCH t.transactionLines LEFT JOIN FETCH t.user u WHERE t.id IN :ids AND t.saleType = :saleType")
-    List<Transaction> findBySaleType(@Param("ids") List<UUID> ids,@Param("saleType") String saleType, Sort sort);
 
     @Query("SELECT DISTINCT t FROM Transaction t JOIN FETCH t.transactionLines LEFT JOIN FETCH t.user u WHERE t.id = :id")
     Optional<Transaction> findByIdWithLines(@Param("id") UUID id);

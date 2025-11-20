@@ -106,25 +106,19 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Page<TransactionDto> getTransactions(Pageable pageable) {
         Page<UUID> idpage = repository.findAllTransactionIds(pageable);
-        List<Transaction> transactions = repository.findByIds(idpage.getContent(),pageable.getSort());
-        List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
-        return new PageImpl<>(collected, pageable, idpage.getTotalElements());
+        return new PageImpl<>(getList(idpage,pageable), pageable, idpage.getTotalElements());
     }
 
     @Override
     public Page<TransactionDto> getTransactionsByType(Pageable pageable, String transactionType) {
-        Page<UUID> idpage = repository.findAllTransactionIds(pageable);
-        List<Transaction> transactions = repository.findByTransactionType(idpage.getContent(),transactionType,pageable.getSort());
-        List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
-        return new PageImpl<>(collected, pageable, idpage.getTotalElements());
+        Page<UUID> idpage = repository.findAllTransactionIdsByType(transactionType,pageable);
+        return new PageImpl<>(getList(idpage,pageable), pageable, idpage.getTotalElements());
     }
 
     @Override
     public Page<TransactionDto> getTransactionsBySale(Pageable pageable, String saleType) {
-        Page<UUID> idpage = repository.findAllTransactionIds(pageable);
-        List<Transaction> transactions = repository.findBySaleType(idpage.getContent(),saleType,pageable.getSort());
-        List<TransactionDto> collected = transactions.stream().map(mapper::toDto).toList();
-        return new PageImpl<>(collected, pageable, idpage.getTotalElements());
+        Page<UUID> idpage = repository.findAllTransactionIdsBySale(saleType,pageable);
+        return new PageImpl<>(getList(idpage,pageable), pageable, idpage.getTotalElements());
     }
 
     @Override
@@ -143,5 +137,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void deleteTransaction(UUID id) {
         repository.deleteById(id);
+    }
+
+    private List<TransactionDto> getList(Page<UUID> idList, Pageable pageable){
+        List<Transaction> transactions = repository.findByIds(idList.getContent(),pageable.getSort());
+        return transactions.stream().map(mapper::toDto).toList();
     }
 }
