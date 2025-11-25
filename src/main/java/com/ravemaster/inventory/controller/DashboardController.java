@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/v1/dashboard/")
@@ -36,61 +38,38 @@ public class DashboardController {
     }
 
     @GetMapping("/low-stock")
-    public ResponseEntity<Response> getLowStockProducts(Pageable pageable, @RequestParam("min") Integer min, @RequestParam("max") Integer max){
-        Page<ProductDto> productByName = dashboardService.getLowStockProducts(pageable, min, max);
+    public ResponseEntity<Response> getLowStockProducts(){
+        List<ProductDto> productByName = dashboardService.getLowStockProducts();
 
-        PaginationResponse paginationResponse = PaginationResponse.builder()
-                .totalElements(productByName.getTotalElements())
-                .totalPages(productByName.getTotalPages())
-                .currentPage(productByName.getNumber())
-                .pageSize(productByName.getSize())
-                .build();
 
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")
-                .paginationResponse(paginationResponse)
-                .products(productByName.getContent())
+                .products(productByName)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping("/best-selling")
-    public ResponseEntity<Response> getBestSellingProducts(Pageable pageable){
-        Page<ProductDto> productByName = dashboardService.getBestSellingProducts(pageable);
-
-        PaginationResponse paginationResponse = PaginationResponse.builder()
-                .totalElements(productByName.getTotalElements())
-                .totalPages(productByName.getTotalPages())
-                .currentPage(productByName.getNumber())
-                .pageSize(productByName.getSize())
-                .build();
+    public ResponseEntity<Response> getBestSellingProducts(){
+        List<ProductDto> productByName = dashboardService.getBestSellingProducts();
 
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")
-                .paginationResponse(paginationResponse)
-                .products(productByName.getContent())
+                .products(productByName)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping("/worst-selling")
-    public ResponseEntity<Response> getWorstSellingProducts(Pageable pageable){
-        Page<ProductDto> productByName = dashboardService.getWorstSellingProducts(pageable);
-
-        PaginationResponse paginationResponse = PaginationResponse.builder()
-                .totalElements(productByName.getTotalElements())
-                .totalPages(productByName.getTotalPages())
-                .currentPage(productByName.getNumber())
-                .pageSize(productByName.getSize())
-                .build();
+    public ResponseEntity<Response> getWorstSellingProducts(){
+        List<ProductDto> productByName = dashboardService.getWorstSellingProducts();
 
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")
-                .paginationResponse(paginationResponse)
-                .products(productByName.getContent())
+                .products(productByName)
                 .build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }

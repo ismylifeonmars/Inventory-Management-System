@@ -13,6 +13,7 @@ import com.ravemaster.inventory.services.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -55,33 +56,32 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Page<ProductDto> getLowStockProducts(Pageable pageable, Integer min, Integer max) {
-        Page<UUID> lowStockProductsIds = productRepository.findLowStockProductsIds(min, max, pageable);
-        return new PageImpl<>(getList(lowStockProductsIds,pageable),pageable, lowStockProductsIds.getTotalElements());
+    public List<ProductDto> getLowStockProducts() {
+        List<Product> lowStockProducts = productRepository.findLowStockProducts(PageRequest.of(0,10));
+        return getList(lowStockProducts);
     }
 
     @Override
-    public Page<ProductDto> getBestSellingProducts(Pageable pageable) {
-        Page<UUID> bestSellingProductIds = productRepository.findBestSellingProductIds(pageable);
-        return new PageImpl<>(getList(bestSellingProductIds,pageable),pageable,bestSellingProductIds.getTotalElements());
+    public List<ProductDto> getBestSellingProducts() {
+        List<Product> bestSellingProducts = productRepository.findBestSellingProducts( PageRequest.of(0,20));
+        return getList(bestSellingProducts);
     }
 
     @Override
-    public Page<ProductDto> getWorstSellingProducts(Pageable pageable) {
-        Page<UUID> worstSellingProductIds = productRepository.findWorstSellingProductIds(pageable);
-        return new PageImpl<>(getList(worstSellingProductIds,pageable),pageable,worstSellingProductIds.getTotalElements());
+    public List<ProductDto> getWorstSellingProducts() {
+        List<Product> worstSellingProducts = productRepository.findWorstSellingProducts( PageRequest.of(0,20));
+        return getList(worstSellingProducts);
     }
 
-    private List<ProductDto> getList(Page<UUID> idList, Pageable pageable){
-        List<Product> byIds = productRepository.findByIdsSecond(idList.getContent());
+    private List<ProductDto> getList(List<Product> list){
 
         List<Category> categoryList = new ArrayList<>();
-        for (Product product: byIds){
+        for (Product product: list){
             categoryList.add(product.getCategory());
         }
 
         List<CategoryDto> categoryDtos = categoryList.stream().map(categoryMapper::toDto).toList();
-        List<ProductDto> productDtos = byIds.stream().map(mapper::toDto).toList();
+        List<ProductDto> productDtos = list.stream().map(mapper::toDto).toList();
 
         IntStream.range(0, productDtos.size())
                 .forEach( i -> {
