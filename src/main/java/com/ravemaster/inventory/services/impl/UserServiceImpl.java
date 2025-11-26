@@ -85,7 +85,6 @@ public class UserServiceImpl implements UserService {
                 ));
         existingUser.setName(user.getName());
         existingUser.setEmail(user.getEmail());
-        existingUser.setRole(user.getRole());
         existingUser.setPhoneNumber(user.getPhoneNumber());
 
         return userRepository.save(existingUser);

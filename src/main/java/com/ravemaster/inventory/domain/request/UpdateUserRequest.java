@@ -18,8 +18,6 @@ public class UpdateUserRequest {
     private String name;
     @NotBlank(message = "Email cannot be blank")
     private String email;
-    @NotNull(message = "Role cannot be null")
-    private String role;
     @NotBlank(message = "phone number cannot be blank")
     private String phoneNumber;
 }

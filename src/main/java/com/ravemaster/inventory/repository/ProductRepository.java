@@ -30,13 +30,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("SELECT p FROM Product p " +
             "LEFT JOIN p.transactionLines tl " +
             "GROUP BY p.id " +
-            "ORDER BY COALESCE(SUM(tl.quantity), 0) DESC")
+            "ORDER BY COALESCE(SUM(tl.lineTotal), 0) DESC")
     List<Product> findBestSellingProducts(Pageable pageable);
 
     @Query("SELECT p FROM Product p " +
             "LEFT JOIN p.transactionLines tl " +
             "GROUP BY p.id " +
-            "ORDER BY COALESCE(SUM(tl.quantity), 0) ASC")
+            "ORDER BY COALESCE(SUM(tl.lineTotal), 0) ASC")
     List<Product> findWorstSellingProducts(Pageable pageable);
 
     @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.category c LEFT JOIN FETCH p.transactionLines WHERE p.id IN :ids")
