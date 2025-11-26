@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -95,5 +96,11 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
 
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<User> allUsers = userRepository.getAllUsers();
+        return allUsers.stream().map(userMapper::toDto).toList();
     }
 }

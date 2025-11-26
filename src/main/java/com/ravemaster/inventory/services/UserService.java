@@ -1,9 +1,11 @@
 package com.ravemaster.inventory.services;
 
+import com.ravemaster.inventory.domain.dto.UserDto;
 import com.ravemaster.inventory.domain.entity.User;
 import com.ravemaster.inventory.domain.request.RegisterRequest;
 import com.ravemaster.inventory.domain.request.UpdateUserRequest;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService{
@@ -13,4 +15,5 @@ public interface UserService{
     User getUserByName(String name);
     User updateUser(UUID id, UpdateUserRequest user);
     void deleteUser(UUID id);
+    List<UserDto> getAllUsers();
 }

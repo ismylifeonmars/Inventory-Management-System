@@ -13,11 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/v1/user")
+@RequestMapping(path = "/api/v1/users")
 public class UserController {
 
     private final UserService userService;
@@ -63,6 +64,19 @@ public class UserController {
         Response response = Response.builder()
                 .status(200)
                 .message("Success")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Response> getAllUsers(
+    ){
+        List<UserDto> allUsers = userService.getAllUsers();
+        Response response = Response.builder()
+                .status(200)
+                .message("Success")
+                .users(allUsers)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
