@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   db:
-    image: postgres
+    image: postgres:latest
     container_name: inventory-db
     ports:
       - "5432:5432"
@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/18
 
   adminer:
     image: adminer:latest
