@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -44,4 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT COALESCE(SUM(p.stockQuantity * p.unitPrice),0) FROM Product p")
     BigDecimal calculateTotalStockValue();
+
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.category c LEFT JOIN FETCH p.transactionLines WHERE p.name = :name")
+    Optional<Product> findProductByName(@Param("name") String name);
 }

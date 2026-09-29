@@ -10,16 +10,21 @@ import com.ravemaster.inventory.mapper.CategoryMapper;
 import com.ravemaster.inventory.mapper.ProductMapper;
 import com.ravemaster.inventory.mapper.TransactionLineMapper;
 import com.ravemaster.inventory.services.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,8 +41,7 @@ public class ProductController {
     public ResponseEntity<Response> createProduct(
             @Valid @RequestBody ProductRequest productRequest
             ){
-        Product product = productService.createProduct(productRequest);
-        ProductDto dto = mapper.toDto(product);
+        ProductDto dto = productService.createProduct(productRequest);
         Response response = Response.builder()
                 .status(HttpStatus.CREATED.value())
                 .message("Success")
@@ -46,14 +50,30 @@ public class ProductController {
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Upload excel file with products")
+    @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Response> uploadProducts(
+            @Parameter(description = "The excel file to upload")
+            @RequestParam("file")MultipartFile excel
+            ){
+        List<ProductDto> productDtos = productService.uploadProducts(excel);
+
+        Response response = Response.builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Products uploaded successfully")
+                .products(productDtos)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
     @PutMapping(path = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response> updateProduct(
             @PathVariable UUID id,
             @Valid @RequestBody ProductRequest productRequest
     ){
-        Product product = productService.updateProduct(id,productRequest);
-        ProductDto dto = mapper.toDto(product);
+        ProductDto dto = productService.updateProduct(id,productRequest);
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")
@@ -66,10 +86,7 @@ public class ProductController {
     public ResponseEntity<Response> getProduct(
             @PathVariable UUID id
     ){
-        Product product = productService.getProduct(id);
-        CategoryDto categoryDto = categoryMapper.toDto(product.getCategory());
-        ProductDto dto = mapper.toDto(product);
-        dto.setCategoryName(categoryDto.getName());
+        ProductDto dto = productService.getProduct(id);
         Response response = Response.builder()
                 .status(HttpStatus.OK.value())
                 .message("Success")

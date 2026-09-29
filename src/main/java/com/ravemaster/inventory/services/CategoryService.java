@@ -2,6 +2,7 @@ package com.ravemaster.inventory.services;
 
 import com.ravemaster.inventory.domain.dto.CategoryDto;
 import com.ravemaster.inventory.domain.request.CategoryRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
