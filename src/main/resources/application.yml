@@ -45,9 +45,9 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/inventory_db_local
     username: postgres
-    password: changemeinprod!
+    password: Ravemaster99$$
     driver-class-name: org.postgresql.Driver
 
   jpa:

@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
         //Encode password and set it to dto
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userDto.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        String password = passwordEncoder.encode(registerRequest.getPassword());
 
         String username = userDto.getEmail();
 
@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User already exists with email: "+username);
         }
         User entity = userMapper.toEntity(userDto);
+        entity.setPassword(password);
 
         return userRepository.save(entity);
     }

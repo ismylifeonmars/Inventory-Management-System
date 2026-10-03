@@ -1,7 +1,9 @@
 package com.ravemaster.inventory.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ravemaster.inventory.repository.UserRepository;
 import com.ravemaster.inventory.security.JwtAuthenticationFilter;
+import com.ravemaster.inventory.security.RateLimitFilter;
 import com.ravemaster.inventory.security.SystemUserDetailsService;
 import com.ravemaster.inventory.services.AuthenticationService;
 import org.springframework.context.annotation.Bean;
@@ -28,8 +30,8 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authenticationService){
-        return new JwtAuthenticationFilter(authenticationService);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authenticationService, JwtAuthenticationEntryPoint entryPoint){
+        return new JwtAuthenticationFilter(authenticationService, entryPoint);
     }
 
     @Bean
@@ -39,7 +41,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint entryPoint, JwtAccessDeniedHandler accessDeniedHandler, ObjectMapper objectMapper) throws Exception{
         http
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
@@ -51,7 +53,12 @@ public class SecurityConfig {
                 .csrf( csrf -> csrf.disable())
                 .sessionManagement( session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(new RateLimitFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(accessDeniedHandler));
         return http.build();
     }
 

@@ -1,5 +1,6 @@
 package com.ravemaster.inventory.security;
 
+import com.ravemaster.inventory.config.JwtAuthenticationEntryPoint;
 import com.ravemaster.inventory.services.AuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationService authenticationService;
+    private final JwtAuthenticationEntryPoint entryPoint;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -37,7 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception ex){
-            log.warn("Received invalid auth token");
+            SecurityContextHolder.clearContext();
+            entryPoint.commence(request, response,
+                    new BadCredentialsException("Invalid or expired token", ex));
+            return;
         }
 
         filterChain.doFilter(request, response);

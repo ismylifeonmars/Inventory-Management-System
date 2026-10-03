@@ -27,7 +27,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final Long jwtExpiryMs = 60L * 60L * 24L * 1000L ;
+    private final Long jwtExpiryMs = 1000L * 60L * 60L * 24L;
 
     @Override
     public UserDetails authenticate(String email, String password) {
