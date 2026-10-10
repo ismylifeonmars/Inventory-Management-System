@@ -35,6 +35,10 @@ public class Response {
     private TransactionDtoSecond transactionDtoSecond;
     private List<TransactionDto> transactions;
 
+    private MovementDto movementDto;
+    private MovementDtoSecond movementDtoSecond;
+    private List<MovementDto> movements;
+
     private DashboardResponse dashboardResponse;
 
     //for errors

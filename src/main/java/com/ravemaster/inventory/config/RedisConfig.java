@@ -17,27 +17,27 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-    @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory){
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        Jackson2JsonRedisSerializer<ProductDto> serializer =
-                new Jackson2JsonRedisSerializer<>(mapper, ProductDto.class);
-
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10))
-                .disableCachingNullValues()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(serializer));
-
-        return RedisCacheManager
-                .builder(connectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
-                .build();
-    }
+//    @Bean
+//    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory){
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.registerModule(new JavaTimeModule());
+//        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//
+//        Jackson2JsonRedisSerializer<ProductDto> serializer =
+//                new Jackson2JsonRedisSerializer<>(mapper, ProductDto.class);
+//
+//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+//                .entryTtl(Duration.ofMinutes(10))
+//                .disableCachingNullValues()
+//                .serializeValuesWith(RedisSerializationContext.SerializationPair
+//                        .fromSerializer(serializer));
+//
+//        return RedisCacheManager
+//                .builder(connectionFactory)
+//                .cacheDefaults(redisCacheConfiguration)
+//                .build();
+//    }
 //for spring boot 4 and later
 //    @Bean
 //    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory,

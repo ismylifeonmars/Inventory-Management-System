@@ -3,14 +3,14 @@ package com.ravemaster.inventory.services.impl;
 import com.ravemaster.inventory.domain.dto.TransactionDto;
 import com.ravemaster.inventory.domain.dto.TransactionDtoSecond;
 import com.ravemaster.inventory.domain.dto.TransactionLineDto;
-import com.ravemaster.inventory.domain.entity.Product;
-import com.ravemaster.inventory.domain.entity.Transaction;
-import com.ravemaster.inventory.domain.entity.TransactionLine;
-import com.ravemaster.inventory.domain.entity.User;
+import com.ravemaster.inventory.domain.entity.*;
+import com.ravemaster.inventory.domain.enums.MovementType;
+import com.ravemaster.inventory.domain.enums.ReferenceType;
 import com.ravemaster.inventory.domain.request.TransactionLineRequest;
 import com.ravemaster.inventory.domain.request.TransactionRequest;
 import com.ravemaster.inventory.mapper.TransactionLineMapper;
 import com.ravemaster.inventory.mapper.TransactionMapper;
+import com.ravemaster.inventory.repository.MovementRepository;
 import com.ravemaster.inventory.repository.ProductRepository;
 import com.ravemaster.inventory.repository.TransactionRepository;
 import com.ravemaster.inventory.repository.UserRepository;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,6 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final UserRepository userRepository;
     private final TransactionMapper mapper;
     private final TransactionLineMapper lineMapper;
+    private final MovementRepository movementRepository;
 
     @Override
     @Transactional
@@ -47,12 +47,26 @@ public class TransactionServiceImpl implements TransactionService {
 
         List<TransactionLine> transactionLines = new ArrayList<>();
 
+        List<MovementLine> movementLines = new ArrayList<>();
+
         List<Product> products = new ArrayList<>();
 
         Transaction transaction = Transaction.builder()
                 .transactionType(request.getTransactionType())
                 .saleType(request.getSaleType())
                 .build();
+
+        Movement movement = Movement.builder()
+                .referenceType(ReferenceType.TRANSACTION)
+                .build();
+
+        if (transaction.getTransactionType().equalsIgnoreCase("sale")){
+            movement.setMovementType(MovementType.SALE);
+            movement.setReason("Stock movement as a result of a sale");
+        } else if(transaction.getTransactionType().equalsIgnoreCase("purchase")){
+            movement.setMovementType(MovementType.PURCHASE);
+            movement.setReason("Stock movement as a result of a purchase");
+        }
 
         User byName = userRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new EntityNotFoundException(
@@ -61,6 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
         );
 
         transaction.setUser(byName);
+        movement.setPerformedBy(byName);
 
         for(TransactionLineRequest lineRequest: request.getTransactionLineRequests()){
             Integer quantity = lineRequest.getQuantity();
@@ -71,19 +86,6 @@ public class TransactionServiceImpl implements TransactionService {
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Product does not exist"
                     ));
-
-            if (transaction.getTransactionType().equalsIgnoreCase("Sale")){
-                if (product.getStockQuantity()<=0){
-                    throw new IllegalArgumentException("Inventory quantity for product: "+product.getName()+" is zero");
-                } else if (product.getStockQuantity()<quantity){
-                    throw new IllegalArgumentException("Inventory quantity for product: "+product.getName()+" is less than transaction quantity");
-                } else {
-                    product.setStockQuantity(product.getStockQuantity()-quantity);
-                }
-            } else {
-                product.setStockQuantity(product.getStockQuantity()+quantity);
-            }
-            products.add(product);
             TransactionLine transactionLine = TransactionLine.builder()
                     .quantity(quantity)
                     .product(product)
@@ -91,14 +93,29 @@ public class TransactionServiceImpl implements TransactionService {
                     .lineTotal(BigDecimal.valueOf(lineTotal))
                     .transaction(transaction)
                     .build();
+            MovementLine movementLine = MovementLine.builder()
+                    .quantity(quantity)
+                    .previousQuantity(product.getStockQuantity())
+                    .resultingQuantity(product.getStockQuantity()+quantity)
+                    .product(product)
+                    .movement(movement)
+                    .build();
+            product.setStockQuantity(movementLine.getResultingQuantity());
+            products.add(product);
             transactionLines.add(transactionLine);
+            movementLines.add(movementLine);
         }
 
         transaction.setTransactionLines(transactionLines);
         transaction.setTotalAmount(BigDecimal.valueOf(total));
 
+        movement.setMovementLines(movementLines);
+
         productRepository.saveAll(products);
         Transaction savedTransaction = repository.save(transaction);
+
+        movement.setReferenceId(savedTransaction.getId());
+        movementRepository.save(movement);
 
         return mapper.toDto(savedTransaction);
     }

@@ -24,7 +24,6 @@ public class TransactionController{
 
     private final TransactionService transactionService;
 
-
     @PostMapping
     public ResponseEntity<Response> createTransaction(
             @Valid @RequestBody TransactionRequest transactionRequest
